@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import com.example.eventplanner.R;
 
@@ -17,6 +19,8 @@ public class NearbyFragment extends Fragment {
     private static final String TAG = "Nearby";
 
     private PageViewModel pageViewModel;
+
+    @BindView(R.id.section_label) TextView textView;
 
     public NearbyFragment() {
         // Required empty public constructor
@@ -41,7 +45,7 @@ public class NearbyFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_layout, container, false);
-        final TextView textView = root.findViewById(R.id.section_label);
+        ButterKnife.bind(this, root);
         pageViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {

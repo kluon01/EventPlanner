@@ -4,19 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/section_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:fontFamily="@font/raleway_semibold"
@@ -24,8 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@string/hello_blank_fragment"
-        />
+        tools:text="@string/hello_blank_fragment" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -34,9 +32,9 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:src="@drawable/ic_add_white_24dp"
-        app:tint="@color/white"
         app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
