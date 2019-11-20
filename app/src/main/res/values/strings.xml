@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Event Planner</string>
+    <string name="hello_blank_fragment">Hello</string>
+    <string name="tab_text_1">Your Events</string>
+    <string name="tab_text_2">Calendar</string>
+    <string name="tab_text_3">Find/Nearby</string>
+</resources>
