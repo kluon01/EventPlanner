@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "295372586866",
+    "firebase_url": "https://eventr-6826f.firebaseio.com",
+    "project_id": "eventr-6826f",
+    "storage_bucket": "eventr-6826f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295372586866:android:410c528894cbbcb65aa7eb",
+        "android_client_info": {
+          "package_name": "com.example.eventplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "295372586866-phbvadc7i2ekr03hvnfr6qtdqcjdr6l7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.eventplanner",
+            "certificate_hash": "1a263bafddebdf5a1cf63cab7a009b92b08a3909"
+          }
+        },
+        {
+          "client_id": "295372586866-9m65kc4aai5mddjneu5r18n3iur2aui5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9vBik3udCGwPKhW0AdXr0I1FMeOrvjao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "295372586866-9m65kc4aai5mddjneu5r18n3iur2aui5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

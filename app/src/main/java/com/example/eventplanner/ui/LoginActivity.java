@@ -6,9 +6,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.eventplanner.MainActivity;
 import com.example.eventplanner.R;
+import com.example.eventplanner.presenter.FirebaseHandler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
@@ -18,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginScreen";
     private static final int REQUEST_SIGNUP = 0;
+    FirebaseHandler firebaseHandler;
 
     @BindView(R.id.email_input)
     EditText emailInput;
@@ -34,7 +37,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        loginButton.setOnClickListener(view -> login());
+        firebaseHandler = new FirebaseHandler();
+
+        loginButton.setOnClickListener(view -> authorize());
 
         signupText.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
@@ -42,9 +47,28 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void login() {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        firebaseHandler = new FirebaseHandler();
+    }
+
+    public void authorize() {
+        if(emailInput.getText().toString().trim().isEmpty())
+            Toast.makeText(this, "Please enter an email.", Toast.LENGTH_SHORT).show();
+        else if(passwordInput.getText().toString().trim().isEmpty())
+            Toast.makeText(this, "Please enter a password", Toast.LENGTH_SHORT).show();
+        else
+            firebaseHandler.checkAuthentication(emailInput.getText().toString().trim(), passwordInput.getText().toString().trim(), this); // calls login() when completed
+    }
+
+    public void login(boolean authorized){
+        if(authorized) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+        }
+        else
+            Toast.makeText(this, "Please make sure a valid email and password is entered", Toast.LENGTH_LONG).show();
     }
 
 }
