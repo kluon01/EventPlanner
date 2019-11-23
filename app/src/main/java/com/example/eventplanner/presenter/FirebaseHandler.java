@@ -1,12 +1,14 @@
 package com.example.eventplanner.presenter;
 
-import android.app.Activity;
-import android.content.Context;
+import android.util.Log;
 
 import com.example.eventplanner.ui.LoginActivity;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -17,63 +19,12 @@ public class FirebaseHandler {
     FirebaseFirestore firestoreDB;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private static final String TAG = "FireBaseHandler";
+
 
 
     public FirebaseHandler() {
         mAuth = FirebaseAuth.getInstance();
-
-        // Real Time Database Way (good for small amounts of data)
-        /*var myEvent = Event("event3", 8,  LatLng(10997754.5,1.2222))
-
-        myRef.setValue(myEvent)
-
-        myRef.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                var value = p0.value as HashMap<*, *>
-
-                Log.d("NAME", value.get("name").toString())
-                Log.d("POSITION", value.get("position").toString())
-            }
-
-        })*/
-
-
-        //TODO: Authentication Handling
-        // Authentication handling
-        /*mAuth = FirebaseAuth.getInstance()
-
-        mLoginButoon.setOnClickListener {
-
-            mAuth!!.signInWithEmailAndPassword(
-                    mEmailET.text.toString().trim(), mPassET.text.toString().trim()
-            )
-                    .addOnCompleteListener { task: Task<AuthResult> ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Sign In Successful", Toast.LENGTH_LONG).show()
-                }
-                if (!task.isSuccessful) {
-                    Toast.makeText(this, "Sign In Unsuccessful", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-
-        mCreateButton.setOnClickListener {
-            mAuth!!.createUserWithEmailAndPassword(
-                    mEmailET.text.toString().trim(), mPassET.text.toString().trim()
-            )
-                    .addOnCompleteListener { task: Task<AuthResult> ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Creation Successful", Toast.LENGTH_LONG).show()
-                }
-                if (!task.isSuccessful) {
-                    Toast.makeText(this, "Creation Unsuccessful", Toast.LENGTH_LONG).show()
-                }
-            }
-        }*/
     }
 
     public void addTestDataEvent() {
@@ -99,10 +50,40 @@ public class FirebaseHandler {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful())
-                        activity.login(false);
+                        activity.defaultLogin(false);
                     if(task.isSuccessful())
-                        activity.login(true);
+                        activity.defaultLogin(true);
                 });
+    }
+
+    public void firebaseAuthWithGoogle(GoogleSignInAccount acct, LoginActivity activity) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        // [START_EXCLUDE silent]
+        //showProgressDialog();
+        // [END_EXCLUDE]
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Sign in success, update UI with the signed-in user's information
+                Log.d(TAG, "signInWithCredential:success");
+                FirebaseUser user = mAuth.getCurrentUser();
+                //activity.checkUser(); // For debugging
+                activity.defaultLogin(true);
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w(TAG, "signInWithCredential:failure", task.getException());
+                activity.defaultLogin(false);
+            }
+        });
+
+        // [START_EXCLUDE]
+        //hideProgressDialog();
+        // [END_EXCLUDE]
+    }
+
+    public void signOutUser(){
+        mAuth.signOut();
     }
 
     class Event {

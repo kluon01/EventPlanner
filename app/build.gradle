@@ -39,4 +39,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.1.0'
     implementation 'com.google.firebase:firebase-firestore:21.3.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
 }
