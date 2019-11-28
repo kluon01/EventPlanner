@@ -20,7 +20,7 @@ public class NearbyFragment extends Fragment {
 
     private PageViewModel pageViewModel;
 
-    @BindView(R.id.section_label) TextView textView;
+    //@BindView(R.id.section_label) TextView textView;
 
     public NearbyFragment() {
         // Required empty public constructor
@@ -49,7 +49,7 @@ public class NearbyFragment extends Fragment {
         pageViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                //textView.setText(s);
             }
         });
         return root;

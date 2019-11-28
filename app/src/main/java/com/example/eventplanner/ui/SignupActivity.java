@@ -1,11 +1,13 @@
 package com.example.eventplanner.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.eventplanner.MainActivity;
 import com.example.eventplanner.R;
 
 import androidx.annotation.Nullable;
@@ -29,5 +31,17 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+
+        signupButton.setOnClickListener(view -> signup());
+
+        loginLink.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    public void signup() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 }
