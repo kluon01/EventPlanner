@@ -19,7 +19,7 @@ public class CalendarFragment extends Fragment {
 
     private static final String TAG = "Calendar";
     private PageViewModel pageViewModel;
-    @BindView(R.id.section_label) TextView textView;
+    //@BindView(R.id.section_label) TextView textView;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -48,7 +48,7 @@ public class CalendarFragment extends Fragment {
         pageViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                //textView.setText(s);
             }
         });
         return root;

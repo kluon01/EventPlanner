@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
                 R.drawable.ic_event_black_24dp,
                 R.drawable.ic_person_black_24dp
         };
+
         TabsPagerAdapter tabsPagerAdapter = new TabsPagerAdapter(this, getSupportFragmentManager());
 
         ViewPager viewPager = findViewById(R.id.view_pager);
