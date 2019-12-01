@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "295372586866-phbvadc7i2ekr03hvnfr6qtdqcjdr6l7.apps.googleusercontent.com",
+          "client_id": "295372586866-a96a1suev9n2oph1atgk1pfe2u10i1hv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.eventplanner",
             "certificate_hash": "1a263bafddebdf5a1cf63cab7a009b92b08a3909"
+          }
+        },
+        {
+          "client_id": "295372586866-phbvadc7i2ekr03hvnfr6qtdqcjdr6l7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.eventplanner",
+            "certificate_hash": "c7417860eac55ff955cab82c8e2c695b30979393"
           }
         },
         {
@@ -36,7 +44,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "295372586866-9m65kc4aai5mddjneu5r18n3iur2aui5.apps.googleusercontent.com",
+              "client_id": "295372586866-k4oe75m2qftio72b1ff6vqfjbirmrmpv.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

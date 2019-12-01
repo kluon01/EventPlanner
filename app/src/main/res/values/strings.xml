@@ -10,4 +10,36 @@
     <string name="google_signIn_button">Sign in with your Google Account</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
+    <string name="title_placeholder">Title</string>
+    <string name="subtitle_placeholder">SubTitle</string>
+    <string name="event_info_placeholder">Here is an event.</string>
+    <string name="empty_screen">You have no events right now.</string>
+    <string name="btn_retry">Reload</string>
+
+    <string-array name="event_titles">
+        <item>Barbecue</item>
+        <item>Birthday</item>
+        <item>Party</item>
+        <item>Bowling</item>
+        <item>Basketball</item>
+        <item>Golf</item>
+    </string-array>
+
+    <string-array name="event_subtitles">
+        <item>Best griller in town baby</item>
+        <item>One more year closer to dead</item>
+        <item>I want to get destroyed</item>
+        <item>Bowl me</item>
+        <item>Ball me</item>
+        <item>Golf.</item>
+    </string-array>
+
+    <string-array name="event_info">
+        <item>Bring some sauce pls</item>
+        <item>I only want money as gifts</item>
+        <item>BYOB you mongrels</item>
+        <item>I dont even like to bowl</item>
+        <item>NBA more like free Hong Kong</item>
+        <item>ZZZzzzzzzzz…</item>
+    </string-array>
 </resources>

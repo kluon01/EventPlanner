@@ -1,11 +1,19 @@
 package com.example.eventplanner.presenter;
 
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.example.eventplanner.model.Event;
 import com.example.eventplanner.ui.LoginActivity;
+import com.example.eventplanner.ui.SignupActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -13,15 +21,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
-// TODO: This is a prototyping file, will split up functions as needed and use AsyncTask when necessary in later development
+// TODO: This is a prototyping file, will split up functions as needed and use RxJava when necessary in later development
 public class FirebaseHandler {
 
     FirebaseFirestore firestoreDB;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private static final String TAG = "FireBaseHandler";
-
-
 
     public FirebaseHandler() {
         mAuth = FirebaseAuth.getInstance();
@@ -30,10 +36,10 @@ public class FirebaseHandler {
     public void addTestDataEvent() {
         HashMap user = new HashMap();
         user.put("first", "Kyle");
-        user.put("last", "Davisong");
+        user.put("last", "Davison");
         user.put("born", 1998);
 
-        Event mEvent = new Event("event1", 5, new LatLng(90, 5.5555));
+        Event mEvent = new Event("event1", "event1", "info");
 
         firestoreDB.collection("events")
                 .add(mEvent)
@@ -82,19 +88,24 @@ public class FirebaseHandler {
         // [END_EXCLUDE]
     }
 
-    public void signOutUser(){
-        mAuth.signOut();
+    public void createUser(String email, String password, SignupActivity signupActivity){
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "createUserWithEmail:success");
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        signupActivity.signInNewUser(email, password);
+                        //updateUI(user);
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                        //updateUI(null);
+                    }
+                });
     }
 
-    class Event {
-        public String name;
-        public int members;
-        public LatLng position;
-
-        public Event(String n, int m, LatLng p) {
-            name = n;
-            members = m;
-            position = new LatLng(p.latitude, p.longitude);
-        }
+    public void signOutUser(){
+        mAuth.signOut();
     }
 }
