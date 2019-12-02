@@ -5,6 +5,11 @@
     <string name="tab_text_2">Calendar</string>
     <string name="tab_text_3">Find/Nearby</string>
     <string name="signup">Signup</string>
+    <string name="no_account_yet_create_one">No account yet? Create one</string>
+    <string name="login">Login</string>
+    <string name="google_signIn_button">Sign in with your Google Account</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
     <string name="title_placeholder">Title</string>
     <string name="subtitle_placeholder">SubTitle</string>
     <string name="event_info_placeholder">Here is an event.</string>
@@ -35,6 +40,6 @@
         <item>BYOB you mongrels</item>
         <item>I dont even like to bowl</item>
         <item>NBA more like free Hong Kong</item>
-        <item>ZZZzzzzzzzz...</item>
+        <item>ZZZzzzzzzzz…</item>
     </string-array>
 </resources>

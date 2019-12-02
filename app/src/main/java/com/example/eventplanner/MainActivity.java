@@ -3,6 +3,8 @@ package com.example.eventplanner;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
+
+import com.example.eventplanner.presenter.firebase.LoginInPresenter;
 import com.example.eventplanner.ui.TabsPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
@@ -28,5 +30,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.getTabAt(0).setIcon(tabIcons[0]);
         tabs.getTabAt(1).setIcon(tabIcons[1]);
         tabs.getTabAt(2).setIcon(tabIcons[2]);
+
+        LoginInPresenter fbh = new LoginInPresenter();
     }
 }
