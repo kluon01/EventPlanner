@@ -2,7 +2,6 @@ package com.example.eventplanner.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,11 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.presenter.firebase.SignUpPresenter;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,16 +88,18 @@ public class SignupActivity extends AppCompatActivity {
         return mydisposableObserver = new DisposableObserver<Boolean>() {
             @Override
             public void onNext(Boolean result) {
-                    // take user back to login screen
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
+                // TODO : run check user for a quick test (for debugging)
+                //checkUser();
+                // take user back to login screen
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
             }
 
             @Override
             public void onError(Throwable e) {
-                Toast.makeText(getApplicationContext(),"Error adding user to database", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Error adding user to database", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -116,5 +113,9 @@ public class SignupActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mycompositeDisposable.clear();
+    }
+
+    public void checkUser() {
+        Toast.makeText(this, "Current User is " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
     }
 }
