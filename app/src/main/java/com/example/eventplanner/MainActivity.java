@@ -4,7 +4,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.eventplanner.presenter.FirebaseHandler;
+import com.example.eventplanner.presenter.firebase.FirebaseHandler;
 import com.example.eventplanner.ui.TabsPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 

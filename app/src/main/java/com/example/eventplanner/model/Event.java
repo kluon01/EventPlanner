@@ -1,18 +1,53 @@
 package com.example.eventplanner.model;
 
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Date;
+
 public class Event {
 
     private String eTitle;
     private String eSubtitle;
     private String eInfo;
-    //private LatLng eLocation;
+    private LatLng eLocation; // Can convert LatLng to address, see https://youtu.be/Ut_VK92QqEQ and https://stackoverflow.com/questions/13598647/google-map-how-to-get-address-in-android
+    private long dateAndTime;
 
+    public Event(){
 
-    public Event(String eTitle, String eSubtitle, String eInfo) {
+    }
+
+    public Event(String eTitle, String eSubtitle, String eInfo){
         this.eTitle = eTitle;
         this.eSubtitle = eSubtitle;
         this.eInfo = eInfo;
-        //this.eLocation = eLocation;
+    }
+
+    public Event(String eTitle, String eSubtitle, String eInfo, LatLng eLocation, long dateAndTime) {
+        this.eTitle = eTitle;
+        this.eSubtitle = eSubtitle;
+        this.eInfo = eInfo;
+        this.eLocation = eLocation;
+        this.dateAndTime = dateAndTime;
+
+        /*
+        // For future reference
+        private SimpleDateFormat dateFormat;
+        private Calendar calendar;
+        Calendar calendar;
+        SimpleDateFormat dateFormat;
+
+        calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dateAndTime);
+        dateFormat = new SimpleDateFormat("MMMM d, yyyy 'at' h:mm a");
+
+        tvDateAndTime.setText(dateFormat.format(calendar.getTime()));
+        */
     }
 
     public String getTitle() {
@@ -26,11 +61,11 @@ public class Event {
     public String getInfo() {
         return eInfo;
     }
-    /*
+
     public LatLng getLocation() {
         return eLocation;
     }
-*/
+
     public void setTitle(String title) {
         eTitle = title;
     }
@@ -42,10 +77,16 @@ public class Event {
     public void setInfo(String info) {
         eInfo = info;
     }
-/*
+
     public void setLocation(LatLng location) {
         eLocation = location;
     }
 
- */
+    public long getDateAndTime() {
+        return dateAndTime;
+    }
+
+    public void setDateAndTime(long dateAndTime) {
+        this.dateAndTime = dateAndTime;
+    }
 }

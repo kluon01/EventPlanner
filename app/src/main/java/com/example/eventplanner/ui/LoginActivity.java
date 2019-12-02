@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventplanner.MainActivity;
 import com.example.eventplanner.R;
-import com.example.eventplanner.presenter.FirebaseHandler;
+import com.example.eventplanner.presenter.firebase.FirebaseHandler;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;

@@ -1,4 +1,4 @@
-package com.example.eventplanner.presenter;
+package com.example.eventplanner.presenter.firebase;
 
 import android.util.Log;
 import android.widget.Toast;
@@ -86,23 +86,6 @@ public class FirebaseHandler {
         // [START_EXCLUDE]
         //hideProgressDialog();
         // [END_EXCLUDE]
-    }
-
-    public void createUser(String email, String password, SignupActivity signupActivity){
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "createUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        signupActivity.signInNewUser(email, password);
-                        //updateUI(user);
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                        //updateUI(null);
-                    }
-                });
     }
 
     public void signOutUser(){
