@@ -81,32 +81,13 @@ public class SignupActivity extends AppCompatActivity {
         mycompositeDisposable.add(
                 observable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(getObserver()));
-    }
-
-    public DisposableObserver<Boolean> getObserver() {
-        return mydisposableObserver = new DisposableObserver<Boolean>() {
-            @Override
-            public void onNext(Boolean result) {
-                // TODO : run check user for a quick test (for debugging)
-                //checkUser();
-                // take user back to login screen
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Toast.makeText(getApplicationContext(), "Error adding user to database", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
+                        //.subscribeWith(getObserver()));
+                        .subscribe(result -> {
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }));
     }
 
     @Override

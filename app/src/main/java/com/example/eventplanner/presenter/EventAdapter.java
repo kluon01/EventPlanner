@@ -6,12 +6,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.eventplanner.R;
 import com.example.eventplanner.model.Event;
 
 import java.util.List;
 
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -63,8 +64,8 @@ public class EventAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         }
     }
 
-    public void addItems(List<Event> eventList) {
-        mEventList.addAll(eventList);
+    public void setData(List<Event> eventList) {
+        mEventList = eventList;
         notifyDataSetChanged();
     }
 

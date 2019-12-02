@@ -31,14 +31,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String TAG = "LoginScreen";
-    private static final int REQUEST_SIGNUP = 0;
-    private GoogleSignInClient mGoogleSignInClient;
-    private LoginInPresenter loginInPresenter;
-    private static final int RC_SIGN_IN = 9001;
-    private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
-    private DisposableObserver<Boolean> mydisposableObserver;
-
     @BindView(R.id.email_input)
     EditText emailInput;
     @BindView(R.id.password_input)
@@ -49,6 +41,15 @@ public class LoginActivity extends AppCompatActivity {
     TextView signupText;
     @BindView(R.id.google_signIn_button)
     Button google_SignIn_button;
+
+    private static final String TAG = "LoginScreen";
+    private static final int REQUEST_SIGNUP = 0;
+    private static final int RC_SIGN_IN = 9001;
+
+    private GoogleSignInClient mGoogleSignInClient;
+    private LoginInPresenter loginInPresenter;
+    private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
+    private DisposableObserver<Boolean> mydisposableObserver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,13 +85,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
     //***************************************
-    //*********Default Login Methods**********
+    //*********Default Login Methods*********
     //***************************************
     public void authorize() {
-        if(emailInput.getText().toString().trim().isEmpty())
+        if (emailInput.getText().toString().trim().isEmpty())
             Toast.makeText(this, "Please enter an email.", Toast.LENGTH_SHORT).show();
 
-        else if(passwordInput.getText().toString().trim().isEmpty())
+        else if (passwordInput.getText().toString().trim().isEmpty())
             Toast.makeText(this, "Please enter a password", Toast.LENGTH_SHORT).show();
 
         else {
@@ -105,36 +106,16 @@ public class LoginActivity extends AppCompatActivity {
             mycompositeDisposable.add(observable
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(getDefaultLoginObserver()));
+                    .subscribe(this::defaultLogin));
         }
     }
 
-    public DisposableObserver<Boolean> getDefaultLoginObserver() {
-        return mydisposableObserver = new DisposableObserver<Boolean>() {
-            @Override
-            public void onNext(Boolean result) {
-                defaultLogin(result);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
-    }
-
-    public void defaultLogin(boolean authorized){
-        if(authorized) {
+    public void defaultLogin(boolean authorized) {
+        if (authorized) {
             checkUser();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
-        }
-        else
+        } else
             Toast.makeText(this, "Please make sure a valid email and password is entered", Toast.LENGTH_LONG).show();
     }
 
@@ -174,40 +155,26 @@ public class LoginActivity extends AppCompatActivity {
             mycompositeDisposable.add(observable
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(getGoogleLoginObserver()));
+                    .subscribe(this::googleLogin));
         }
     }
 
-    public DisposableObserver<Boolean> getGoogleLoginObserver() {
-        return mydisposableObserver = new DisposableObserver<Boolean>() {
-            @Override
-            public void onNext(Boolean result) {
-                googleLogin(result);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
-    }
-
-    public void googleLogin(boolean authorized){
-        if(authorized) {
+    public void googleLogin(boolean authorized) {
+        if (authorized) {
             checkUser();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
-        }
-        else
+        } else
             Toast.makeText(this, "Error connecting your Google Account", Toast.LENGTH_LONG).show();
     }
 
-    public void checkUser(){
-        Toast.makeText(this, "Current User is " +  FirebaseAuth.getInstance().getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+    public void checkUser() {
+        Toast.makeText(this, "Current User is " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mycompositeDisposable.clear();
     }
 }
