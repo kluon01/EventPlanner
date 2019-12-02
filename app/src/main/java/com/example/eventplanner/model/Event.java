@@ -1,6 +1,5 @@
 package com.example.eventplanner.model;
 
-import com.google.android.gms.maps.model.LatLng;
 
 public class Event {
 
@@ -18,7 +17,7 @@ public class Event {
         this.eTitle = eTitle;
         this.eSubtitle = eSubtitle;
         this.eInfo = eInfo;
-        eLocation = new LatLng(0f,0f);
+        eLocation = new LatLng();
         dateAndTime = 0;
 
     }

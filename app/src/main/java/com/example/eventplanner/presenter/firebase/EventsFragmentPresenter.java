@@ -15,6 +15,11 @@ public class EventsFragmentPresenter {
     private FirebaseFirestore firestoreDB;
     private String TAG = "EVENTSPRESENTER";
 
+    public EventsFragmentPresenter() {
+        firestoreDB = FirebaseFirestore.getInstance();
+    }
+
+
     // Prototyping way, will retrieve all events
     public void getEvents(ObservableEmitter<List<Event>> emitter){
 
@@ -35,6 +40,19 @@ public class EventsFragmentPresenter {
                     else{
                         Log.d(TAG, "Error getting documents: ", task.getException());
                     }
+                });
+    }
+
+    public void addTestDataEvent() {
+        Event mEvent = new Event("event1", "event1", String.valueOf(System.currentTimeMillis()));
+
+        firestoreDB.collection("events")
+                .add(mEvent)
+                .addOnSuccessListener(documentReference -> {
+                    // It uploaded
+                })
+                .addOnFailureListener(e -> {
+                    // It did not upload
                 });
     }
 

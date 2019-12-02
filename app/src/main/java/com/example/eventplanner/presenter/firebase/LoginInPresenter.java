@@ -2,7 +2,6 @@ package com.example.eventplanner.presenter.firebase;
 
 import android.util.Log;
 
-import com.example.eventplanner.model.Event;
 import com.example.eventplanner.ui.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.AuthCredential;
@@ -10,8 +9,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
 
 import io.reactivex.ObservableEmitter;
 
@@ -25,24 +22,6 @@ public class LoginInPresenter {
 
     public LoginInPresenter() {
         mAuth = FirebaseAuth.getInstance();
-    }
-
-    public void addTestDataEvent() {
-        HashMap user = new HashMap();
-        user.put("first", "Kyle");
-        user.put("last", "Davison");
-        user.put("born", 1998);
-
-        Event mEvent = new Event("event1", "event1", "info");
-
-        firestoreDB.collection("events")
-                .add(mEvent)
-                .addOnSuccessListener(documentReference -> {
-                    // It uploaded
-                })
-                .addOnFailureListener(e -> {
-                    // It did not upload
-                });
     }
 
     // TODO: make this Async
