@@ -1,14 +1,6 @@
 package com.example.eventplanner.model;
 
-import android.icu.text.SimpleDateFormat;
-import android.icu.util.Calendar;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.Date;
 
 public class Event {
 
@@ -26,6 +18,9 @@ public class Event {
         this.eTitle = eTitle;
         this.eSubtitle = eSubtitle;
         this.eInfo = eInfo;
+        eLocation = new LatLng(0f,0f);
+        dateAndTime = 0;
+
     }
 
     public Event(String eTitle, String eSubtitle, String eInfo, LatLng eLocation, long dateAndTime) {

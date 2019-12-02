@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,14 +12,15 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.model.Event;
 import com.example.eventplanner.presenter.EventAdapter;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class EventsFragment extends Fragment {
 
@@ -57,6 +57,10 @@ public class EventsFragment extends Fragment {
         }
         mEventAdapter.addItems(mEvents);
         mRecyclerView.setAdapter(mEventAdapter);
+    }
+
+    private void getTestEvents(){
+
     }
 
     /**
