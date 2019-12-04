@@ -81,7 +81,8 @@ public class EventsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         pageViewModel.setIndex(TAG);
-        //efPresenter = new EventsFragmentPresenter();
+        efPresenter = new EventsFragmentPresenter();
+        //efPresenter.addEventattendee(); // Added example data to event attendee collection
         //getTestEvents();
     }
 
