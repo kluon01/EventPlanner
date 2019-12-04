@@ -26,10 +26,13 @@ import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "LoginScreen";
+    private static final int REQUEST_SIGNUP = 0;
+    private static final int RC_SIGN_IN = 9001;
 
     @BindView(R.id.email_input)
     EditText emailInput;
@@ -40,16 +43,11 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.signup_link)
     TextView signupText;
     @BindView(R.id.google_signIn_button)
+
     Button google_SignIn_button;
-
-    private static final String TAG = "LoginScreen";
-    private static final int REQUEST_SIGNUP = 0;
-    private static final int RC_SIGN_IN = 9001;
-
     private GoogleSignInClient mGoogleSignInClient;
     private LoginInPresenter loginInPresenter;
     private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
-    private DisposableObserver<Boolean> mydisposableObserver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -19,7 +19,6 @@ import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class SignupActivity extends AppCompatActivity {
@@ -37,7 +36,6 @@ public class SignupActivity extends AppCompatActivity {
 
     private SignUpPresenter signUpPresenter;
     private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
-    private DisposableObserver<Boolean> mydisposableObserver;
     private String TAG = "SignupActivity";
 
     @Override
@@ -81,7 +79,6 @@ public class SignupActivity extends AppCompatActivity {
         mycompositeDisposable.add(
                 observable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        //.subscribeWith(getObserver()));
                         .subscribe(result -> {
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
