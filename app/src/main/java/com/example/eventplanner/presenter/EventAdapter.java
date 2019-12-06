@@ -69,6 +69,11 @@ public class EventAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void addData(Event event){
+        mEventList.add(event);
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends BaseViewHolder {
 
         @BindView(R.id.thumbnail)

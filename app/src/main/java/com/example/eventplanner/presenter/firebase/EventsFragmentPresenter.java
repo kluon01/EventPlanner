@@ -26,7 +26,7 @@ public class EventsFragmentPresenter {
     }
 
     // Prototyping way, will retrieve all events
-    public void activateListener(ObservableEmitter<List<Event>> emitter) {
+    public void getAllEvents(ObservableEmitter<List<Event>> emitter) {
 
         firestoreDB.collection("events")
                 .get()
@@ -46,8 +46,82 @@ public class EventsFragmentPresenter {
                 });
     }
 
+    // Gets event names of events the user is in
+    public void getUsersEventNames(ObservableEmitter<List<String>> emitter){
+
+        firestoreDB.collectionGroup("eventAttendees")
+                .whereArrayContains("attendants","PNvkRfetAuU4V92NVDV4") // TODO: have it to where we can use user's auth id instead
+                .get()
+                .addOnCompleteListener(task -> {
+                    List<String> names = new ArrayList<>();
+
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(TAG, "Retrieved User Event Names " + document.getId());
+                            names.add(document.get("title").toString());
+                        }
+                        emitter.onNext(names);
+                    }
+                    else {
+                        Log.d(TAG, "Failed to get user events " + task.getException());
+                    }
+                });
+    }
+
+    public void checkNewEvents(ObservableEmitter<List<String>> emitter, List<String> eventnames){
+        // TODO Query for event names in roomdb, if there is a mismatch grab new list from firebase
+        emitter.onNext(eventnames);
+    }
+
+    public void getNewEvents(ObservableEmitter<Event> emitter, String eventname){
+
+        firestoreDB.collection("events")
+                .whereEqualTo("title", eventname)
+                .get()
+                .addOnCompleteListener(task -> {
+                    Log.d(TAG, "Checked " + eventname);
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d(TAG, "Retrieved User Events Objects " + document.getId());
+                            Event event = document.toObject(Event.class);
+                            emitter.onNext(event);
+                        }
+                    }
+                    else {
+                        Log.d(TAG, "Failed to get user events " + task.getException());
+                    }
+                });
+    }
+
+    // Example of real time updates
+    public void getEventsRealTime(ObservableEmitter<List<Event>> emitter) {
+
+        firestoreDB.collection("cities").whereEqualTo("capital", true)
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
+
+                    if (queryDocumentSnapshots == null) {
+                        Log.w(TAG, "Snap shots are null");
+                        return;
+                    }
+
+                    List<Event> events = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Log.d(TAG, "Retrieved Data " + document.getData());
+                        Event event = document.toObject(Event.class);
+                        events.add(event);
+                    }
+                    emitter.onNext(events);
+                });
+    }
+
+    // Add event attendee test data
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void addEventattendee() {
+
         firestoreDB.collection("events")
                 .document("CI5WMC5IynKVoeRKQlIw")
                 .get()
@@ -71,33 +145,6 @@ public class EventsFragmentPresenter {
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
                     }
-                });
-    }
-
-
-    // Retrieves events that user is in
-    // TODO: implement a way that only events that have changed in some way ware updated, deleted events notify user, event changes date notifies user, etc
-    public void getEventsRealTime(ObservableEmitter<List<Event>> emitter) {
-
-        firestoreDB.collection("cities").whereEqualTo("capital", true)
-                .addSnapshotListener((queryDocumentSnapshots, e) -> {
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e);
-                        return;
-                    }
-
-                    if (queryDocumentSnapshots == null) {
-                        Log.w(TAG, "Snap shots are null");
-                        return;
-                    }
-
-                    List<Event> events = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Log.d(TAG, "Retrieved Data " + document.getData());
-                        Event event = document.toObject(Event.class);
-                        events.add(event);
-                    }
-                    emitter.onNext(events);
                 });
     }
 }

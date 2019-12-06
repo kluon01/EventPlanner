@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class EventsFragment extends Fragment {
@@ -38,7 +37,6 @@ public class EventsFragment extends Fragment {
     private PageViewModel pageViewModel;
     private EventAdapter mEventAdapter;
     private LinearLayoutManager mLayoutManager;
-    private DisposableObserver<List<Event>> mydisposableObserver;
     private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
 
 
@@ -64,18 +62,44 @@ public class EventsFragment extends Fragment {
         mRecyclerView.setAdapter(mEventAdapter);
     }
 
-    private void getTestEvents() {
-        Log.d(TAG, "Getting test events");
-        Observable<List<Event>> eventObservable = Observable.create(emitter -> {
-            efPresenter.activateListener(emitter);
-        });
+    // TODO: This apporach works, but firebase supports queries across subcollections, might get rid of event attendees and instead have events contain a attendees subcollection with the list of users
+    private void findUserEvents() {
+        Log.d(TAG, "Getting names of events user is in");
+        Observable<List<String>> findUserEventsObservable = Observable.create(emitter -> efPresenter.getUsersEventNames(emitter));
 
         mycompositeDisposable.add(
-                eventObservable.subscribeOn(Schedulers.io())
+                findUserEventsObservable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(events -> mEventAdapter.setData(events)));
+                        .subscribe(eventnames -> checkLocalDatabase(eventnames)));
     }
 
+    private void checkLocalDatabase(List<String> eventnames) {
+        // Check if event names match those already in the RoomDB
+        Observable<List<String>> checkNewEventsObservable = Observable.create(emitter -> efPresenter.checkNewEvents(emitter, eventnames));
+
+        mycompositeDisposable.add(
+                checkNewEventsObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(result -> updateEventList(result)));
+    }
+
+    // TODO: Right now all events are quired from firebase, add local RoomDB and check for changes only to reduce network calls
+    private void updateEventList(List<String> eventnames){
+        for(String name : eventnames) {
+            if (!eventnames.isEmpty()) {
+                Observable<Event> updateEventList = Observable.create(emitter -> efPresenter.getNewEvents(emitter, name));
+
+                mycompositeDisposable.add(
+                        updateEventList.subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(event -> {
+                                    mEventAdapter.addData(event);
+                                }));
+            }
+        }
+    }
+
+    // Lifecycle Methods
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +114,7 @@ public class EventsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         efPresenter = new EventsFragmentPresenter();
-        getTestEvents();
+        findUserEvents();
     }
 
     @Override
