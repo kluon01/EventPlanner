@@ -1,7 +1,6 @@
 package com.example.eventplanner.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,18 +61,8 @@ public class EventsFragment extends Fragment {
         mRecyclerView.setAdapter(mEventAdapter);
     }
 
-    // TODO: This apporach works, but firebase supports queries across subcollections, might get rid of event attendees and instead have events contain a attendees subcollection with the list of users
-    private void findUserEvents() {
-        Log.d(TAG, "Getting names of events user is in");
-        Observable<List<String>> findUserEventsObservable = Observable.create(emitter -> efPresenter.getUsersEventNames(emitter));
-
-        mycompositeDisposable.add(
-                findUserEventsObservable.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(eventnames -> checkLocalDatabase(eventnames)));
-    }
-
-    private void checkLocalDatabase(List<String> eventnames) {
+    // TODO: App launches and fetches local database first then will run firestore query to see if list is out of date
+   /* private void checkLocalDatabase(List<String> eventnames) {
         // Check if event names match those already in the RoomDB
         Observable<List<String>> checkNewEventsObservable = Observable.create(emitter -> efPresenter.checkNewEvents(emitter, eventnames));
 
@@ -81,22 +70,15 @@ public class EventsFragment extends Fragment {
                 checkNewEventsObservable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> updateEventList(result)));
-    }
+    }*/
 
-    // TODO: Right now all events are quired from firebase, add local RoomDB and check for changes only to reduce network calls
-    private void updateEventList(List<String> eventnames){
-        for(String name : eventnames) {
-            if (!eventnames.isEmpty()) {
-                Observable<Event> updateEventList = Observable.create(emitter -> efPresenter.getNewEvents(emitter, name));
+    private void findUserEventsGroupColl() {
+        Observable<List<Event>> findUserEventsSubGroupObservable = Observable.create(emitter -> efPresenter.getEventsGroupColl(emitter));
 
-                mycompositeDisposable.add(
-                        updateEventList.subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(event -> {
-                                    mEventAdapter.addData(event);
-                                }));
-            }
-        }
+        mycompositeDisposable.add(
+                findUserEventsSubGroupObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(events -> mEventAdapter.setData(events)));
     }
 
     // Lifecycle Methods
@@ -106,15 +88,14 @@ public class EventsFragment extends Fragment {
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         pageViewModel.setIndex(TAG);
         efPresenter = new EventsFragmentPresenter();
-        //efPresenter.addEventattendee(); // Added example data to event attendee collection
-        //getTestEvents();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         efPresenter = new EventsFragmentPresenter();
-        findUserEvents();
+        //findUserEvents();
+        findUserEventsGroupColl();
     }
 
     @Override
