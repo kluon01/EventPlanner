@@ -61,7 +61,8 @@ public class SignupActivity extends AppCompatActivity {
         String nameText = nameInput.getText().toString();
 
         if (!emailText.trim().isEmpty() || !passwordText.trim().isEmpty() || !nameText.trim().isEmpty()) {
-            //TODO: Send user verification email, check password strength, check for profanity
+            //TODO: Send user verification email, check password strength, check for profanity, etc
+            //TODO: Note that firebaseAuth handles things like short password, catch exceptions and display them to user
             signUpPresenter.createUser(nameText, emailText, passwordText, this);
         }
     }

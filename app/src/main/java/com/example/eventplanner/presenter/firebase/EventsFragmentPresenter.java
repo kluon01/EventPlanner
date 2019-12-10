@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.eventplanner.model.Event;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,9 +24,13 @@ import io.reactivex.ObservableEmitter;
 public class EventsFragmentPresenter {
     private FirebaseFirestore firestoreDB;
     private String TAG = "EVENTSPRESENTER";
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
 
     public EventsFragmentPresenter() {
+        mAuth = FirebaseAuth.getInstance();
         firestoreDB = FirebaseFirestore.getInstance();
+        mUser = mAuth.getCurrentUser();
     }
 
     public void checkNewEvents(ObservableEmitter<List<String>> emitter, List<String> eventnames) {
@@ -37,7 +42,7 @@ public class EventsFragmentPresenter {
         Log.d(TAG, "Starting query");
 
         firestoreDB.collectionGroup("attendees")
-                .whereEqualTo("attendant", "PNvkRfetAuU4V92NVDV4") // TODO: have it to where we can use user's auth id instead
+                .whereEqualTo("attendant", mUser.getUid())
                 .get()
                 .addOnCompleteListener(task -> {
                     List<Event> events = new ArrayList<>();
