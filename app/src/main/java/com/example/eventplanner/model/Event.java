@@ -8,6 +8,7 @@ public class Event {
     private String eInfo;
     private LatLng eLocation; // Can convert LatLng to address, see https://youtu.be/Ut_VK92QqEQ and https://stackoverflow.com/questions/13598647/google-map-how-to-get-address-in-android
     private long dateAndTime;
+    private String uid;
 
     public Event(){
 
@@ -82,5 +83,13 @@ public class Event {
 
     public void setDateAndTime(long dateAndTime) {
         this.dateAndTime = dateAndTime;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

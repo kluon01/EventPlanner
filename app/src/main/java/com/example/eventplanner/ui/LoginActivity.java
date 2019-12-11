@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventplanner.MainActivity;
 import com.example.eventplanner.R;
-import com.example.eventplanner.presenter.firebase.LoginInPresenter;
+import com.example.eventplanner.presenter.firebase.LoginPresenter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
 
     Button google_SignIn_button;
     private GoogleSignInClient mGoogleSignInClient;
-    private LoginInPresenter loginInPresenter;
+    private LoginPresenter loginInPresenter;
     private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
 
     @Override
@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        loginInPresenter = new LoginInPresenter();
+        loginInPresenter = new LoginPresenter();
         FirebaseAuth.getInstance().signOut();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -77,8 +77,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //FirebaseAuth.getInstance().signOut();
-        loginInPresenter = new LoginInPresenter();
+        loginInPresenter = new LoginPresenter();
     }
 
 

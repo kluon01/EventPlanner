@@ -38,9 +38,58 @@ public class EventsFragmentPresenter {
         emitter.onNext(eventnames);
     }
 
-    public void getEventsGroupColl(ObservableEmitter<List<Event>> emitter) {
+    // Gets user event with realtime updates
+    public void getUserEventsRealtime(ObservableEmitter<List<Event>> emitter) {
         Log.d(TAG, "Starting query");
+        firestoreDB.collectionGroup("attendees")
+                .whereEqualTo("attendant", mUser.getUid())
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
 
+                    if (queryDocumentSnapshots == null) {
+                        Log.w(TAG, "Snap shots are null");
+                        return;
+                    }
+
+                    List<Event> events = new ArrayList<>();
+                    AtomicInteger tracker = new AtomicInteger(); // I needed a way to know when all the event results were added to the List
+                    final int length = queryDocumentSnapshots.getDocuments().size();
+
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Log.d(TAG, "Retrieved Data of length: " + length);
+
+                        // Nested Query to get event data
+                        document.getReference().getParent().getParent().get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                DocumentSnapshot queriedEvent = task1.getResult();
+                                Log.d(TAG, "Got event data" + queriedEvent.get("title"));
+
+                                // TODO: debug this with new test data, data might not convert right
+                                Event event = new Event(
+                                        queriedEvent.get("title").toString(),
+                                        queriedEvent.get("subtitle").toString(),
+                                        queriedEvent.get("info").toString(),
+                                        null, // TODO: obviously fix this
+                                        (long) queriedEvent.get("dateAndTime")
+                                );
+                                events.add(event);
+                                tracker.getAndIncrement();
+                            }
+                            if (tracker.intValue() == length) {
+                                Log.d(TAG, "Got all events");
+                                emitter.onNext(events);
+                            }
+                        });
+                    }
+                });
+    }
+
+    // Gets user event but no realtime updates
+    public void getUserEvents(ObservableEmitter<List<Event>> emitter) {
+        Log.d(TAG, "Starting query");
         firestoreDB.collectionGroup("attendees")
                 .whereEqualTo("attendant", mUser.getUid())
                 .get()
@@ -84,7 +133,6 @@ public class EventsFragmentPresenter {
                 });
     }
 
-
     // Prototyping way, will retrieve all events
     public void getAllEvents(ObservableEmitter<List<Event>> emitter) {
 
@@ -103,31 +151,6 @@ public class EventsFragmentPresenter {
                     } else {
                         Log.d(TAG, "Error getting documents: ", task.getException());
                     }
-                });
-    }
-
-    // Example of real time updates
-    public void getEventsRealTime(ObservableEmitter<List<Event>> emitter) {
-
-        firestoreDB.collection("cities").whereEqualTo("capital", true)
-                .addSnapshotListener((queryDocumentSnapshots, e) -> {
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e);
-                        return;
-                    }
-
-                    if (queryDocumentSnapshots == null) {
-                        Log.w(TAG, "Snap shots are null");
-                        return;
-                    }
-
-                    List<Event> events = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Log.d(TAG, "Retrieved Data " + document.getData());
-                        Event event = document.toObject(Event.class);
-                        events.add(event);
-                    }
-                    emitter.onNext(events);
                 });
     }
 

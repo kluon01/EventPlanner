@@ -72,8 +72,8 @@ public class EventsFragment extends Fragment {
                         .subscribe(result -> updateEventList(result)));
     }*/
 
-    private void findUserEventsGroupColl() {
-        Observable<List<Event>> findUserEventsSubGroupObservable = Observable.create(emitter -> efPresenter.getEventsGroupColl(emitter));
+    private void findUserEvents() {
+        Observable<List<Event>> findUserEventsSubGroupObservable = Observable.create(emitter -> efPresenter.getUserEventsRealtime(emitter));
 
         mycompositeDisposable.add(
                 findUserEventsSubGroupObservable.subscribeOn(Schedulers.io())
@@ -95,7 +95,7 @@ public class EventsFragment extends Fragment {
         super.onResume();
         efPresenter = new EventsFragmentPresenter();
         //findUserEvents();
-        findUserEventsGroupColl();
+        findUserEvents();
     }
 
     @Override
