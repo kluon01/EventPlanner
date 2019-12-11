@@ -23,17 +23,6 @@ public class PermissionsPresenter {
         this.context = context;
     }
 
-    public boolean checkCameraHardware(Context context) {
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
-            // Device has camera
-            return true;
-        } else {
-            // Device has no camera
-            Toast.makeText(context,"This device does not have a camera, app cannot function.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }
-
     // Request for all permissions
     public void requestPermissions() {
         ActivityCompat.requestPermissions(context, reqPermissions, 101);
