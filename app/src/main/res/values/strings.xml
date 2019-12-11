@@ -19,6 +19,12 @@
     <string name="subtitle">Subtitle</string>
     <string name="info">Info</string>
     <string name="address">Address</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="street">Street</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
+    <string name="zipcode">Zipcode</string>
     <string name="event_public">Make this event public?</string>
     <string name="create_event">Create Event</string>
     <string name="edit_event">Edit Event</string>
