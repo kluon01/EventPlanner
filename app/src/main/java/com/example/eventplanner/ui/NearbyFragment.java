@@ -75,4 +75,9 @@ public class NearbyFragment extends Fragment {
         });
         return root;
     }
+
+    // For testing only show events within 20 miles
+    public void getNearbyEvents(){
+
+    }
 }
