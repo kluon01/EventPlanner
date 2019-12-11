@@ -7,18 +7,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.presenter.MapPresenter;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class NearbyFragment extends Fragment {
 
     private static final String TAG = "Nearby";
-
+    private MapPresenter mapPresenter;
     private PageViewModel pageViewModel;
+    private SupportMapFragment mapFragment;
+    private FragmentManager fragmentManager;
 
     //@BindView(R.id.section_label) TextView textView;
 
@@ -41,16 +51,27 @@ public class NearbyFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_layout, container, false);
-        ButterKnife.bind(this, root);
-        pageViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                //textView.setText(s);
+        View root = inflater.inflate(R.layout.fragment_mapview, container, false);
+        //ButterKnife.bind(this, root);
+        fragmentManager = getChildFragmentManager();
+        mapPresenter = new MapPresenter(getActivity());
+        mapFragment = (SupportMapFragment)fragmentManager.findFragmentById(R.id.nearby_map);
+
+        pageViewModel.getText().observe(this, s -> {
+            if(mapFragment == null) {
+                mapFragment = SupportMapFragment.newInstance();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nearby_map, mapFragment, TAG)
+                        .commit();
             }
+            mapFragment.getMapAsync(googleMap -> {
+                LatLng coordinate = mapPresenter.getCurrentLocation();
+                Marker marker = googleMap.addMarker(new MarkerOptions().position(coordinate));
+                CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate,10);
+                googleMap.animateCamera(location);
+            });
         });
         return root;
     }

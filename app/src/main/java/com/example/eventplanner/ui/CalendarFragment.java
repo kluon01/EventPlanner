@@ -45,11 +45,8 @@ public class CalendarFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_layout, container, false);
         ButterKnife.bind(this, root);
-        pageViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                //textView.setText(s);
-            }
+        pageViewModel.getText().observe(this, s -> {
+            //textView.setText(s);
         });
         return root;
     }

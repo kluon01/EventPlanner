@@ -78,17 +78,11 @@ public class EventsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.card_fragment_layout, container, false);
         ButterKnife.bind(this, root);
-        pageViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                setUp();
-            }
-        });
+        pageViewModel.getText().observe(this, s -> setUp());
         return root;
     }
 }

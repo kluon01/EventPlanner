@@ -15,6 +15,13 @@
     <string name="event_info_placeholder">Here is an event.</string>
     <string name="empty_screen">You have no events right now.</string>
     <string name="btn_retry">Reload</string>
+    <string name="title">Title</string>
+    <string name="subtitle">Subtitle</string>
+    <string name="info">Info</string>
+    <string name="address">Address</string>
+    <string name="event_public">Make this event public?</string>
+    <string name="create_event">Create Event</string>
+    <string name="edit_event">Edit Event</string>
 
     <string-array name="event_titles">
         <item>Barbecue</item>
@@ -42,4 +49,6 @@
         <item>NBA more like free Hong Kong</item>
         <item>ZZZzzzzzzzz…</item>
     </string-array>
+    <string name="title_activity_add_event">AddEventActivity</string>
+    <string name="title_activity_edit_event">EditEventActivity</string>
 </resources>
