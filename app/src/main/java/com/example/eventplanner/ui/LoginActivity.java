@@ -12,10 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventplanner.MainActivity;
 import com.example.eventplanner.R;
-
-import com.example.eventplanner.presenter.firebase.LoginPresenter;
 import com.example.eventplanner.presenter.PermissionsPresenter;
-
+import com.example.eventplanner.presenter.firebase.LoginPresenter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,10 +35,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
     private static final int RC_SIGN_IN = 9001;
 
-    private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
-    private DisposableObserver<Boolean> mydisposableObserver;
-    private PermissionsPresenter permissionsPresenter;
-
     @BindView(R.id.email_input)
     EditText emailInput;
     @BindView(R.id.password_input)
@@ -52,9 +46,10 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.google_signIn_button)
 
     Button google_SignIn_button;
+    private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
+    private PermissionsPresenter permissionsPresenter;
     private GoogleSignInClient mGoogleSignInClient;
     private LoginPresenter loginInPresenter;
-    private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
