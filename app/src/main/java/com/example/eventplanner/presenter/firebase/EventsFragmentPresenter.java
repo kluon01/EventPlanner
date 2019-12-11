@@ -75,8 +75,8 @@ public class EventsFragmentPresenter {
                                 queryDocumentSnapshot.get("title").toString(),
                                 queryDocumentSnapshot.get("subtitle").toString(),
                                 queryDocumentSnapshot.get("info").toString(),
-                                0f,
-                                0f,
+                                Float.parseFloat(queryDocumentSnapshot.get("latitude").toString()),
+                                Float.parseFloat(queryDocumentSnapshot.get("longitude").toString()),
                                 (long) queryDocumentSnapshot.get("dateAndTime"),
                                 queryDocumentSnapshot.getId()
                         );
