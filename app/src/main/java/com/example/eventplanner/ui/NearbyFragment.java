@@ -16,6 +16,7 @@ import com.example.eventplanner.presenter.firebase.NearbyEventsQuery;
 import com.example.eventplanner.presenter.localDB.LocalDatabaseHandler;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -83,7 +84,7 @@ public class NearbyFragment extends Fragment {
     }
 
     // For testing only show events within 20 miles
-    public void getNearbyEvents(LatLng userLocation) {
+    public void getNearbyEvents(LatLng userLocation, GoogleMap googleMap) {
         Observable<List<Event>> eventsNearUserObservable = Observable.create(emitter -> nearbyEventsQuery.getNearbyEvents(emitter, userLocation));
         mycompositeDisposable.add(
                 eventsNearUserObservable
@@ -92,7 +93,8 @@ public class NearbyFragment extends Fragment {
                         .subscribe(eventsNearby ->{
                             // Display markers from events latitude and longitude values
                             for(Event event : eventsNearby){
-
+                                LatLng coordinate = new LatLng(event.getLatitude(), event.getLongitude());
+                                Marker marker = googleMap.addMarker(new MarkerOptions().position(coordinate));
                             }
                         })
         );
@@ -107,7 +109,7 @@ public class NearbyFragment extends Fragment {
             CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 10);
             googleMap.animateCamera(location);
 
-            getNearbyEvents(coordinate);
+            getNearbyEvents(coordinate, googleMap);
         });
 
         nearbyEventsQuery = new NearbyEventsQuery();

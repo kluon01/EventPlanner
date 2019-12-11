@@ -32,7 +32,7 @@ public class CreateEventPresenter {
         mUser = mAuth.getCurrentUser();
     }
 
-    public void AddEventToFirebase(ObservableEmitter<Boolean> emitter, Event event) {
+    public void addEventToFirebase(ObservableEmitter<Boolean> emitter, Event event) {
         Map<String, Object> docData = new HashMap<>();
         docData.put("dateAndTime", event.getDateAndTime());
         docData.put("info", event.getInfo());

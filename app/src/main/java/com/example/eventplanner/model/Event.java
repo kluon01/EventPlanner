@@ -55,6 +55,29 @@ public class Event {
         */
     }
 
+    @Ignore
+    public Event(String eTitle, String eSubtitle, String eInfo, float eLatitude, float eLongitude, long dateAndTime) {
+        this.title = eTitle;
+        this.subtitle = eSubtitle;
+        this.info = eInfo;
+        this.latitude = eLatitude;
+        this.longitude = eLongitude;
+        this.dateAndTime = dateAndTime;
+        /*
+        // For future reference
+        private SimpleDateFormat dateFormat;
+        private Calendar calendar;
+        Calendar calendar;
+        SimpleDateFormat dateFormat;
+
+        calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dateAndTime);
+        dateFormat = new SimpleDateFormat("MMMM d, yyyy 'at' h:mm a");
+
+        tvDateAndTime.setText(dateFormat.format(calendar.getTime()));
+        */
+    }
+
     public long getDateAndTime() {
         return dateAndTime;
     }
