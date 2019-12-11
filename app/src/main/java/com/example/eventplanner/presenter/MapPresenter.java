@@ -5,6 +5,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 
+import com.example.eventplanner.presenter.firebase.NearbyEventsQuery;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MapPresenter {
@@ -23,5 +24,4 @@ public class MapPresenter {
         latLng = new LatLng(location.getLatitude(),location.getLongitude());
         return latLng;
     }
-
 }

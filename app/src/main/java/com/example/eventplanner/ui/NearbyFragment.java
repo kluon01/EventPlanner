@@ -4,23 +4,29 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.model.Event;
 import com.example.eventplanner.presenter.MapPresenter;
+import com.example.eventplanner.presenter.firebase.NearbyEventsQuery;
+import com.example.eventplanner.presenter.localDB.LocalDatabaseHandler;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class NearbyFragment extends Fragment {
 
@@ -29,6 +35,9 @@ public class NearbyFragment extends Fragment {
     private PageViewModel pageViewModel;
     private SupportMapFragment mapFragment;
     private FragmentManager fragmentManager;
+
+    private NearbyEventsQuery nearbyEventsQuery;
+    private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
 
     //@BindView(R.id.section_label) TextView textView;
 
@@ -46,6 +55,9 @@ public class NearbyFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        nearbyEventsQuery = new NearbyEventsQuery();
+
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         pageViewModel.setIndex(TAG);
     }
@@ -57,27 +69,54 @@ public class NearbyFragment extends Fragment {
         //ButterKnife.bind(this, root);
         fragmentManager = getChildFragmentManager();
         mapPresenter = new MapPresenter(getActivity());
-        mapFragment = (SupportMapFragment)fragmentManager.findFragmentById(R.id.nearby_map);
+        mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.nearby_map);
 
         pageViewModel.getText().observe(this, s -> {
-            if(mapFragment == null) {
+            if (mapFragment == null) {
                 mapFragment = SupportMapFragment.newInstance();
                 fragmentManager.beginTransaction()
                         .replace(R.id.nearby_map, mapFragment, TAG)
                         .commit();
             }
-            mapFragment.getMapAsync(googleMap -> {
-                LatLng coordinate = mapPresenter.getCurrentLocation();
-                Marker marker = googleMap.addMarker(new MarkerOptions().position(coordinate));
-                CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate,10);
-                googleMap.animateCamera(location);
-            });
         });
         return root;
     }
 
     // For testing only show events within 20 miles
-    public void getNearbyEvents(){
+    public void getNearbyEvents(LatLng userLocation) {
+        Observable<List<Event>> eventsNearUserObservable = Observable.create(emitter -> nearbyEventsQuery.getNearbyEvents(emitter, userLocation));
+        mycompositeDisposable.add(
+                eventsNearUserObservable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(eventsNearby ->{
+                            // Display markers from events latitude and longitude values
+                            for(Event event : eventsNearby){
 
+                            }
+                        })
+        );
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapFragment.getMapAsync(googleMap -> {
+            LatLng coordinate = mapPresenter.getCurrentLocation();
+            Marker marker = googleMap.addMarker(new MarkerOptions().position(coordinate));
+            CameraUpdate location = CameraUpdateFactory.newLatLngZoom(coordinate, 10);
+            googleMap.animateCamera(location);
+
+            getNearbyEvents(coordinate);
+        });
+
+        nearbyEventsQuery = new NearbyEventsQuery();
+        mapPresenter = new MapPresenter(getActivity());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mycompositeDisposable.clear();
     }
 }
