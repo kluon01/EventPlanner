@@ -29,7 +29,7 @@ public class PermissionsPresenter {
             return true;
         } else {
             // Device has no camera
-            Toast.makeText(context,"This device does not have a camera, app cannot function.", Toast.LENGTH_SHORT);
+            Toast.makeText(context,"This device does not have a camera, app cannot function.", Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -43,7 +43,7 @@ public class PermissionsPresenter {
     public boolean hasAllPermissions() {
         for (String permission : reqPermissions) {
             if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(context,"Permissions denied, please allow all permissions.",Toast.LENGTH_SHORT);
+                Toast.makeText(context,"Permissions denied, please allow all permissions.",Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
