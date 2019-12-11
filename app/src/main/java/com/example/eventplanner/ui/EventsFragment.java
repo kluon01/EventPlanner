@@ -20,7 +20,6 @@ import com.example.eventplanner.presenter.localDB.LocalDatabaseHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,7 +86,10 @@ public class EventsFragment extends Fragment {
         mycompositeDisposable.add(
                 userEventDocumentIdObservable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(this::setUpEventDataUpdates));
+                        .subscribe(result -> {
+                            //clearLocalDatabase(); // TODO: This handles deleting for now
+                            setUpEventDataUpdates(result);
+                        }));
     }
 
     private void setUpEventDataUpdates(List<String> eventDocumentIds) {
@@ -105,29 +107,7 @@ public class EventsFragment extends Fragment {
         mycompositeDisposable.add(
                 insertDataObservable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(result -> {
-                            Log.d(TAG, "Inserted " + result + " event(s)");
-                            // TODO: Get list of event from local database again
-                        }));
-    }
-
-    private void insertTestLocalData() {
-        Event event = new Event("local database event",
-                "did it work?",
-                "info",
-                14.567f,
-                -5.2f,
-                1233454345,
-                "documentId" + System.currentTimeMillis());
-
-        Observable<Long> addTestDataObservable = Observable.create(emitter -> localDatabaseHandler.insertData(event, emitter));
-
-        mycompositeDisposable.add(
-                addTestDataObservable
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(Schedulers.io())
-                        .subscribe(result -> Log.d(TAG, "Inserted " + result + " event(s)"))
-        );
+                        .subscribe(result -> Log.d(TAG, "Inserted " + result + " event(s)")));
     }
 
     private void clearLocalDatabase() {
@@ -163,8 +143,7 @@ public class EventsFragment extends Fragment {
         // Get event already stored on local database
         getEventListToDisplay();
 
-        // Test functions
-        //insertTestLocalData();
+        // Test function
         //clearLocalDatabase();
     }
 
