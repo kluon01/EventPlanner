@@ -7,17 +7,26 @@ import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
+import com.example.eventplanner.presenter.firebase.LoginPresenter;
+
 import com.example.eventplanner.presenter.PermissionsPresenter;
-import com.example.eventplanner.presenter.firebase.LoginInPresenter;
 import com.example.eventplanner.ui.AddEventActivity;
+
 import com.example.eventplanner.ui.TabsPagerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
         tabs.getTabAt(1).setIcon(tabIcons[1]);
         tabs.getTabAt(2).setIcon(tabIcons[2]);
 
-        LoginInPresenter fbh = new LoginInPresenter();
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // When user returns to login screen
+        super.onBackPressed();
+        mAuth.signOut();
     }
 }

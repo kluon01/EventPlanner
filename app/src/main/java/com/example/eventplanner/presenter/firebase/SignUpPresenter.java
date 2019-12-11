@@ -27,7 +27,7 @@ public class SignUpPresenter {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "createUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        mUser = mAuth.getCurrentUser();
                         signupActivity.signInNewUser(name, email);
                         //updateUI(user);
                     } else {
@@ -41,12 +41,19 @@ public class SignUpPresenter {
     public void addNewUser(String name, String email, ObservableEmitter<Boolean> emitter){
         User newUser = new User(name, email);
 
-        firestoreDB.collection("users")
-                .add(newUser)
-                .addOnSuccessListener(documentReference -> emitter.onNext(true))
-                .addOnFailureListener(e -> {
-                    emitter.onError(e);
-                    Log.w(TAG, "Error adding new user to database", e);
-                });
+        String userID = mUser.getUid();
+
+        if(userID != null) {
+            firestoreDB.collection("users")
+                    .document(userID)
+                    .set(newUser)
+                    .addOnSuccessListener(documentReference -> emitter.onNext(true))
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error adding new user to database", e);
+                    });
+        }
+        else{
+            Log.d(TAG, "User id was null could not add user");
+        }
     }
 }

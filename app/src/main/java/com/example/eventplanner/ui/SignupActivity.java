@@ -19,7 +19,6 @@ import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class SignupActivity extends AppCompatActivity {
@@ -37,7 +36,6 @@ public class SignupActivity extends AppCompatActivity {
 
     private SignUpPresenter signUpPresenter;
     private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
-    private DisposableObserver<Boolean> mydisposableObserver;
     private String TAG = "SignupActivity";
 
     @Override
@@ -63,7 +61,8 @@ public class SignupActivity extends AppCompatActivity {
         String nameText = nameInput.getText().toString();
 
         if (!emailText.trim().isEmpty() || !passwordText.trim().isEmpty() || !nameText.trim().isEmpty()) {
-            //TODO: Send user verification email, check password strength, check for profanity
+            //TODO: Send user verification email, check password strength, check for profanity, etc
+            //TODO: Note that firebaseAuth handles things like short password, catch exceptions and display them to user
             signUpPresenter.createUser(nameText, emailText, passwordText, this);
         }
     }
@@ -81,32 +80,12 @@ public class SignupActivity extends AppCompatActivity {
         mycompositeDisposable.add(
                 observable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(getObserver()));
-    }
-
-    public DisposableObserver<Boolean> getObserver() {
-        return mydisposableObserver = new DisposableObserver<Boolean>() {
-            @Override
-            public void onNext(Boolean result) {
-                // TODO : run check user for a quick test (for debugging)
-                //checkUser();
-                // take user back to login screen
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Toast.makeText(getApplicationContext(), "Error adding user to database", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
+                        .subscribe(result -> {
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }));
     }
 
     @Override
