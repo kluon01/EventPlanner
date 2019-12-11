@@ -1,6 +1,7 @@
 package com.example.eventplanner.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,11 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.model.Event;
 import com.example.eventplanner.presenter.EventAdapter;
 import com.example.eventplanner.presenter.firebase.EventsFragmentPresenter;
+import com.example.eventplanner.presenter.localDB.LocalDatabaseHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class EventsFragment extends Fragment {
 
-    private static final String TAG = "EVENTS";
+    private static final String TAG = "USEREVENTS";
     //@BindView(R.id.section_label) TextView textView;
     @BindView(R.id.mRecyclerView)
     RecyclerView mRecyclerView;
@@ -38,8 +42,8 @@ public class EventsFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
 
-
     private EventsFragmentPresenter efPresenter;
+    private LocalDatabaseHandler localDatabaseHandler;
 
     public EventsFragment() {
         // Required empty public constructor
@@ -61,24 +65,80 @@ public class EventsFragment extends Fragment {
         mRecyclerView.setAdapter(mEventAdapter);
     }
 
-    // TODO: App launches and fetches local database first then will run firestore query to see if list is out of date
-   /* private void checkLocalDatabase(List<String> eventnames) {
-        // Check if event names match those already in the RoomDB
-        Observable<List<String>> checkNewEventsObservable = Observable.create(emitter -> efPresenter.checkNewEvents(emitter, eventnames));
+    private void getEventListToDisplay() {
+        mycompositeDisposable.add(
+                localDatabaseHandler.getEvents()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(events -> {
+                            Log.d(TAG, "Got events locally");
+
+                            // Sort the events by closest time
+                            Collections.sort(events, (o1, o2) -> Long.compare(o1.getDateAndTime(), o2.getDateAndTime()));
+
+                            // Update the ui
+                            mEventAdapter.setData(events);
+                        }));
+    }
+
+    private void getUserEventDocumentIds() {
+        Observable<List<String>> userEventDocumentIdObservable = Observable.create(emitter -> efPresenter.getUserEventDocumentIDs(emitter));
 
         mycompositeDisposable.add(
-                checkNewEventsObservable.subscribeOn(Schedulers.io())
+                userEventDocumentIdObservable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(result -> updateEventList(result)));
-    }*/
+                        .subscribe(this::setUpEventDataUpdates));
+    }
 
-    private void findUserEvents() {
-        Observable<List<Event>> findUserEventsSubGroupObservable = Observable.create(emitter -> efPresenter.getUserEventsRealtime(emitter));
+    private void setUpEventDataUpdates(List<String> eventDocumentIds) {
+        Observable<Event> eventRTUpdateObservable = Observable.create(emitter -> efPresenter.setUpRTEventUpdate(eventDocumentIds, emitter));
 
         mycompositeDisposable.add(
-                findUserEventsSubGroupObservable.subscribeOn(Schedulers.io())
+                eventRTUpdateObservable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(events -> mEventAdapter.setData(events)));
+                        .subscribe(this::updateLocalDatabase));
+    }
+
+    private void updateLocalDatabase(Event event) {
+        Observable<Long> insertDataObservable = Observable.create(emitter -> localDatabaseHandler.insertData(event, emitter));
+
+        mycompositeDisposable.add(
+                insertDataObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(result -> {
+                            Log.d(TAG, "Inserted " + result + " event(s)");
+                            // TODO: Get list of event from local database again
+                        }));
+    }
+
+    private void insertTestLocalData() {
+        Event event = new Event("local database event",
+                "did it work?",
+                "info",
+                14.567f,
+                -5.2f,
+                1233454345,
+                "documentId" + System.currentTimeMillis());
+
+        Observable<Long> addTestDataObservable = Observable.create(emitter -> localDatabaseHandler.insertData(event, emitter));
+
+        mycompositeDisposable.add(
+                addTestDataObservable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.io())
+                        .subscribe(result -> Log.d(TAG, "Inserted " + result + " event(s)"))
+        );
+    }
+
+    private void clearLocalDatabase() {
+        Observable<Boolean> clearTableObservable = Observable.create(emitter -> localDatabaseHandler.clearData(emitter));
+
+        mycompositeDisposable.add(
+                clearTableObservable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.io())
+                        .subscribe(result -> Log.d(TAG, "Cleared Table"))
+        );
     }
 
     // Lifecycle Methods
@@ -88,14 +148,24 @@ public class EventsFragment extends Fragment {
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         pageViewModel.setIndex(TAG);
         efPresenter = new EventsFragmentPresenter();
+        localDatabaseHandler = new LocalDatabaseHandler(getContext());
     }
 
     @Override
     public void onResume() {
         super.onResume();
         efPresenter = new EventsFragmentPresenter();
-        //findUserEvents();
-        findUserEvents();
+        localDatabaseHandler = new LocalDatabaseHandler(getContext());
+
+        // Sets up Firebase queries
+        getUserEventDocumentIds();
+
+        // Get event already stored on local database
+        getEventListToDisplay();
+
+        // Test functions
+        //insertTestLocalData();
+        //clearLocalDatabase();
     }
 
     @Override

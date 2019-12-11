@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.model.Event;
 
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -69,9 +70,39 @@ public class EventAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         notifyDataSetChanged();
     }
 
+
     public void addData(Event event){
         mEventList.add(event);
         notifyDataSetChanged();
+    }
+
+    // ***OLD*** This method will look for event in event list and update it to new data
+    public void updateEventListOld(Event updatedEvent){
+        if(updateExistingEvent(updatedEvent)){
+            notifyDataSetChanged();
+            return;
+        }
+        else{
+            addData(updatedEvent);
+            notifyDataSetChanged();
+        }
+    }
+
+    private boolean updateExistingEvent(Event updatedEvent){
+        Iterator<Event> itr = mEventList.iterator();
+        while(itr.hasNext()){
+            Event event = itr.next();
+            if(event.getDocumentId().equals(updatedEvent.getDocumentId())){
+                event.setDateAndTime(updatedEvent.getDateAndTime());
+                event.setInfo(updatedEvent.getInfo());
+                event.setLatitude(updatedEvent.getLatitude());
+                event.setLongitude(updatedEvent.getLongitude());
+                event.setSubtitle(updatedEvent.getSubtitle());
+                event.setTitle(updatedEvent.getTitle());
+                return true;
+            }
+        }
+        return false;
     }
 
     public class ViewHolder extends BaseViewHolder {

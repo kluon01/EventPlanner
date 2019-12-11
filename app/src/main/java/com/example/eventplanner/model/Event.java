@@ -1,35 +1,45 @@
 package com.example.eventplanner.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+import org.jetbrains.annotations.NotNull;
+
+@Entity(tableName = "event")
 public class Event {
 
-    private String eTitle;
-    private String eSubtitle;
-    private String eInfo;
-    private LatLng eLocation; // Can convert LatLng to address, see https://youtu.be/Ut_VK92QqEQ and https://stackoverflow.com/questions/13598647/google-map-how-to-get-address-in-android
+    @PrimaryKey()
+    @NonNull
+    private String documentId;
+    @ColumnInfo(name = "title")
+    private String title;
+    @ColumnInfo(name = "subtitle")
+    private String subtitle;
+    @ColumnInfo(name = "info")
+    private String info;
+    @ColumnInfo(name = "latitude")
+    private float latitude; // Can convert LatLng to address, see https://youtu.be/Ut_VK92QqEQ and https://stackoverflow.com/questions/13598647/google-map-how-to-get-address-in-android
+    @ColumnInfo(name = "longitude")
+    private float longitude;
+    @ColumnInfo(name = "dateAndTime")
     private long dateAndTime;
-    private String uid;
 
-    public Event(){
-
+    public Event() {
+        this.documentId = "";
     }
 
-    public Event(String eTitle, String eSubtitle, String eInfo){
-        this.eTitle = eTitle;
-        this.eSubtitle = eSubtitle;
-        this.eInfo = eInfo;
-        eLocation = new LatLng();
-        dateAndTime = 0;
-
-    }
-
-    public Event(String eTitle, String eSubtitle, String eInfo, LatLng eLocation, long dateAndTime) {
-        this.eTitle = eTitle;
-        this.eSubtitle = eSubtitle;
-        this.eInfo = eInfo;
-        this.eLocation = eLocation;
+    @Ignore
+    public Event(String eTitle, String eSubtitle, String eInfo, float eLatitude, float eLongitude, long dateAndTime, @NotNull String documentId) {
+        this.title = eTitle;
+        this.subtitle = eSubtitle;
+        this.info = eInfo;
+        this.latitude = eLatitude;
+        this.longitude = eLongitude;
         this.dateAndTime = dateAndTime;
-
+        this.documentId = documentId;
         /*
         // For future reference
         private SimpleDateFormat dateFormat;
@@ -45,38 +55,6 @@ public class Event {
         */
     }
 
-    public String getTitle() {
-        return eTitle;
-    }
-
-    public String getSubtitle() {
-        return eSubtitle;
-    }
-
-    public String getInfo() {
-        return eInfo;
-    }
-
-    public LatLng getLocation() {
-        return eLocation;
-    }
-
-    public void setTitle(String title) {
-        eTitle = title;
-    }
-
-    public void setSubtitle(String subtitle) {
-        eSubtitle = subtitle;
-    }
-
-    public void setInfo(String info) {
-        eInfo = info;
-    }
-
-    public void setLocation(LatLng location) {
-        eLocation = location;
-    }
-
     public long getDateAndTime() {
         return dateAndTime;
     }
@@ -85,11 +63,52 @@ public class Event {
         this.dateAndTime = dateAndTime;
     }
 
-    public String getUid() {
-        return uid;
+    @NotNull
+    public String getDocumentId() {
+        return documentId;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setDocumentId(@NotNull String documentId) {
+        this.documentId = documentId;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
     }
 }
