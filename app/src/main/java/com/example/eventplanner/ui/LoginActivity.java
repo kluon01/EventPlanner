@@ -12,7 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventplanner.MainActivity;
 import com.example.eventplanner.R;
+
 import com.example.eventplanner.presenter.firebase.LoginPresenter;
+import com.example.eventplanner.presenter.PermissionsPresenter;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -33,6 +36,10 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginScreen";
     private static final int REQUEST_SIGNUP = 0;
     private static final int RC_SIGN_IN = 9001;
+
+    private CompositeDisposable mycompositeDisposable = new CompositeDisposable();
+    private DisposableObserver<Boolean> mydisposableObserver;
+    private PermissionsPresenter permissionsPresenter;
 
     @BindView(R.id.email_input)
     EditText emailInput;
@@ -57,6 +64,12 @@ public class LoginActivity extends AppCompatActivity {
 
         loginInPresenter = new LoginPresenter();
         FirebaseAuth.getInstance().signOut();
+
+        permissionsPresenter = new PermissionsPresenter(this);
+
+        if (!permissionsPresenter.hasAllPermissions() && permissionsPresenter.checkCameraHardware(this)) {
+            permissionsPresenter.requestPermissions();
+        }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
