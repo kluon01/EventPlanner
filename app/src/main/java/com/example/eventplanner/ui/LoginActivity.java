@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
 
         permissionsPresenter = new PermissionsPresenter(this);
 
-        if (!permissionsPresenter.hasAllPermissions() && permissionsPresenter.checkCameraHardware(this)) {
+        if (!permissionsPresenter.hasAllPermissions()) {
             permissionsPresenter.requestPermissions();
         }
 

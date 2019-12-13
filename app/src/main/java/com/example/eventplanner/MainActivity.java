@@ -26,13 +26,19 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
-
+    PermissionsPresenter permissionsPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        permissionsPresenter = new PermissionsPresenter(this);
+
+        if (!permissionsPresenter.hasAllPermissions()) {
+            permissionsPresenter.requestPermissions();
+        }
 
         int[] tabIcons = {
                 R.drawable.ic_cake_black_24dp,
