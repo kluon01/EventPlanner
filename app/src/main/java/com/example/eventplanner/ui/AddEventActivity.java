@@ -153,6 +153,7 @@ public class AddEventActivity extends AppCompatActivity {
                         .subscribe(result -> {
                             if(result) {
                                 Toast.makeText(getApplicationContext(), "Add new event", Toast.LENGTH_LONG).show();
+                                finish();
                             }
                             else{
                                 Toast.makeText(getApplicationContext(), "Error, could not add new event", Toast.LENGTH_LONG).show();

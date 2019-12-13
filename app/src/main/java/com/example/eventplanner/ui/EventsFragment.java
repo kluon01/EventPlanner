@@ -87,7 +87,7 @@ public class EventsFragment extends Fragment {
                 userEventDocumentIdObservable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
-                            //clearLocalDatabase(); // TODO: This handles deleting for now
+                            //clearLocalDatabase();
                             setUpEventDataUpdates(result);
                         }));
     }

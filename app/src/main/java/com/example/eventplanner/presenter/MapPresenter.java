@@ -1,12 +1,14 @@
 package com.example.eventplanner.presenter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 
-import com.example.eventplanner.presenter.firebase.NearbyEventsQuery;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 public class MapPresenter {
     private Activity context;
@@ -16,12 +18,30 @@ public class MapPresenter {
 
     public MapPresenter(Activity context) {
         this.context = context;
-        locationManager = (LocationManager) this.context.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) this.context.getSystemService(LOCATION_SERVICE);
     }
 
     public LatLng getCurrentLocation() {
-        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        location = getLastKnownLocation();
         latLng = new LatLng(location.getLatitude(),location.getLongitude());
         return latLng;
     }
+
+    private Location getLastKnownLocation() {
+        locationManager = (LocationManager)context.getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = locationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            Location l = locationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
+    }
+
 }
